@@ -1,0 +1,24 @@
+# temp files from editors
+.travis.yml
+*.md
+oil
+
+# the composer package lock file and install directory
+/composer.lock
+/composer.json
+/composer.phar
+/fuel/vendor
+
+# any of the fuel packages installed by default
+/fuel/core/
+/fuel/packages/auth/
+/fuel/packages/email/
+/fuel/packages/oil/
+/fuel/packages/orm/
+/fuel/packages/parser/
+/public/docs/
+
+# dynamically generated files
+/fuel/app/logs/*/*/*
+/fuel/app/cache/*/*
+/fuel/app/config/crypt.php
