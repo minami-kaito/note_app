@@ -21,5 +21,40 @@
  */
 
 return array(
+    /*
+    'default' => array(
+        'type'           => 'mysqli',
+        'connection'     => array(
+            'hostname'       => 'localhost',
+            'port'           => '3306',
+            'database'       => 'note_app',
+            'username'       => 'root',
+            'password'       => "",
+            'persistent'     => false,
+            'compress'       => false,
+        ),
+        'identifier'     => '`',
+        'table_prefix'   => '',
+        'charset'        => 'utf8',
+        'enable_cache'   => true,
+        'profiling'      => false,
+        'readonly'       => false,
+    ),
+    */
 
+    'note_app' => array(
+	'type'           => 'pdo',
+	'connection'     => array(
+		'dsn'            => 'mysql:host=localhost;dbname=note_app',
+		'username'       => 'root',
+		'password'       => '',
+		'persistent'     => false,
+		'compress'       => false,
+	),
+	'identifier'   => '`',
+	'table_prefix'   => '',
+	'charset'        => 'utf8',
+	'enable_cache'   => true,
+	'profiling'      => false,
+),
 );
