@@ -8,9 +8,10 @@
 </head>
 <body>
     <?php echo Form::open(array('action' => 'note/create', 'method'=>'post')); ?>
+    <?php $result = DB::select('title', 'content')->from('notes')->as_assoc()->execute();
     <div>
         <?php echo Form::label('', 'title'); ?>
-        <?php echo Form::input('title', '', array('placeholder'=>'新規ノートタイトル')); ?>
+        <?php echo Form::input('title', ''); ?>
         <?php echo '作成者：' .Auth::get('user_name'); ?>
         更新日時
         設定メニュー
