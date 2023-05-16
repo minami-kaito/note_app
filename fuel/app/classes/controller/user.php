@@ -160,19 +160,55 @@ class Controller_User extends Controller
 			if ($checkResult) {
 				return Response::forge(View::forge('login/reset_account'));
 			} else {
-				$data['error'] = '認証コードが間違っています。もう一度取得し直してください。';
+				$data['error'] = 'コードが間違っています。もう一度認証してください。';
 			}
 		}
-		// POSTリクエストでない場合はQRコード生成
-		// シークレットキー
+		// POSTリクエストでない場合はコード生成
 		$session = Session::instance('secret');
 		$data['secret'] = $ga->createSecret();
 		Session::set('secret', $data['secret']);
+
 		// Google Charts URL のQRコード
 		$data['qrcodeurl'] = $ga->getQRCodeGoogleUrl('ノートアプリ', $data['secret']);
 		return Response::forge(View::forge('login/authenticator', $data));
 	}
 
+	public function action_change()
+	{
+		if (Input::method() == 'POST') {
+			$val = Validation::forge('create_validation');
+
+			// 名前、メールアドレス、パスワードを検証する
+			// $val->add('user_name', '名前')
+			// 	->add_rule('required');
+			$val->add('password', 'パスワード')
+				->add_rule('required')
+				->add_rule('match_value', $_POST['password_check']);
+
+			// バリデーション実行
+			if ($val->run()) {
+				// バリデーションに成功した場合、db更新
+				try {
+						Auth::update_user(
+							array(
+								'password' => Input::post('password'),
+							)
+					);
+					$data['aiueo'] = 'success update';
+				} catch (Exception $e) {
+					$data['aiueo'] = $e->getMessage();
+				}
+				return Response::forge(View::forge('login/welcome', $data));
+			} else {
+				// バリデーション失敗時、作成ページへ
+				$data['create_validation'] = false;
+				return Response::forge(View::forge('login/reset_account', $data));
+			}
+		} else {
+			// POSTなし、"アカウント作成"から来た場合は認証ページへ
+			return Response::forge(View::forge('user_reset'));
+		}
+	}
 
 	/*
 	 * dbテスト
@@ -193,14 +229,11 @@ class Controller_User extends Controller
 	{
 
 		list($insert_id, $rows_affected) = DB::insert('users')->set(array(
-			'user_id' => NULL,
 			'user_name' => 'John Random',
 			'email' => 'jon@example.com',
 			'password' => 's0_scr3t',
-			'created_at' => '',
 		))->execute();
 	}
-
 
 	/*
 	 * The 404 action for the application.

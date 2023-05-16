@@ -7,6 +7,28 @@
     <title>ノートアプリ</title>
 </head>
 <body>
-    
+    <?php echo Form::open(array('action' => 'note/create', 'method'=>'post')); ?>
+    <div>
+        <?php echo Form::label('', 'title'); ?>
+        <?php echo Form::input('title', '', array('placeholder'=>'新規ノートタイトル')); ?>
+        <?php echo '作成者：' .Auth::get('user_name'); ?>
+        更新日時
+        設定メニュー
+    </div>
+    <div>タグエリア</div>
+    <div>
+        メニューアイコン, 
+        <?php echo Form::submit('submit', '保存'); ?> 
+        文字設定メニュー, 
+        共有メニュー
+    </div>
+    <br>
+    <div>
+        <?php if(isset($aiueo)){echo $aiueo;} ?>
+    </div>
+    <div>
+        <?php echo Form::textarea('content', '', array('rows' => 55, 'cols' => 200)); ?>
+    </div>
+    <?php echo Form::close(); ?>
 </body>
 </html>
