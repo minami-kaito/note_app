@@ -19,7 +19,5 @@
     <div>1/3ページ</div>
     <?php if(!empty($aiueo)){echo $aiueo;} ?>
     <div><?php echo Html::anchor('user/logout', 'ログアウトする'); ?></div>
-    <div><?php echo $this->user['email']; ?></div>
-
 </body>
 </html>
