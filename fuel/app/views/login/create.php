@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ノートアプリ</title>
 </head>
-
 <body>
     <h1>アカウント作成</h1>
     <?php echo Form::open(array('action' => 'user/create', 'method'=>'post')); ?>
@@ -27,9 +26,10 @@
         <?php echo Form::password('password', '', array('placeholder'=>'パスワード')); ?><br>
         <?php echo Form::password('password_check', '', array('placeholder'=>'パスワードの確認')); ?>
     </div>
-    <br>
+    <?php echo isset($error) ? $error : '<br>'; ?>
+    <?php echo isset($result) ? $result : '<br>'; ?>
     <div>
-        <?php echo Html::anchor(Input::referrer(), '戻る'); ?>
+        <?php echo Html::anchor('user/index', '戻る'); ?>
         <?php echo Form::submit('submit', '作成する'); ?>
     </div>
     <?php echo Form::close(); ?>

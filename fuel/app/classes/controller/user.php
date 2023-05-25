@@ -11,239 +11,291 @@
  * @link       https://fuelphp.com
  */
 
+use Fuel\Core\Response;
+use \Model\User;
+
 /**
- * ログイン処理
+ * ユーザーに関する処理
  *
  * @package  app
  * @extends  Controller
  */
 class Controller_User extends Controller
 {
-	/**
-	 * ログイン画面
-	 * @access  public
-	 * @return  Response
-	 */
-	public function action_index()
-	{
-		// すでにログインしているか
+    /**
+     * ログイン中かチェック
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function before()
+    {
+        if (Auth::check()) {
+            return Response::forge(View::forge('note/home'));
+        }
+    }
+
+    /**
+     * ログイン画面へ
+     * @access  public
+     * @return  Response
+     */
+    public function action_index()
+    {
 		if (Auth::check()) {
-			// ログインしていたらホームページへ
-			return Response::forge(View::forge('note/home'));
+            return Response::forge(View::forge('note/home'));
+        }
+        return Response::forge(View::forge('login/index'));
+    }
+
+    /**
+     * ログイン処理
+     * @access  public
+     * @return  Response
+     */
+    public function action_login()
+    {
+		// POSTリクエストでない場合は入力ページへ
+        if (Input::method() != 'POST') {
+            return Response::forge(View::forge('login/index'));
+        }
+
+        $val = Validation::forge('user_validation');
+        $val->add('email', 'メールアドレス')
+            ->add_rule('required')
+            ->add_rule('valid_email');
+        $val->add('password', 'パスワード')
+            ->add_rule('required');
+
+        if (!$val->run()) {
+            $data['login_error'] = 'バリデーションチェックエラー';
+            return Response::forge(View::forge('login/index', $data));
+        }
+
+        $value = $val->validated();
+        $auth = Auth::instance();
+		
+		// ログイン検証
+        if ($auth->login($value['email'], $value['password'])) {
+            return Response::forge(View::forge('note/home'));
+        } else {
+            $data['login_error'] = 'メールアドレスまたはパスワードが正しくありません。';
+            return Response::forge(View::forge('login/index', $data));
+        }
+    }
+
+    /**
+     * アカウント作成
+     * @access  public
+     * @return  Response
+     */
+    public function action_create()
+    {
+		// POSTリクエストでない場合は入力ページへ
+        if (Input::method() != 'POST') {
+            return Response::forge(View::forge('login/create'));
+        }
+
+        $val = Validation::forge('create_validation');
+
+        $val->add('user_name', '名前')
+            ->add_rule('required');
+        $val->add('email', 'メールアドレス')
+            ->add_rule('required')
+            ->add_rule('valid_email')
+            ->add_rule('match_value', $_POST['email_check']);
+        $val->add('password', 'パスワード')
+            ->add_rule('required')
+            ->add_rule('match_value', $_POST['password_check']);
+
+        if (!$val->run()) {
+            $data['error'] = 'バリデーションエラー';
+            return Response::forge(View::forge('login/create', $data));
+        }
+
+        //バリデーション成功時、DBにユーザー登録
+		$value = $val->validated();
+        try {
+            Auth::create_user(
+                $value['user_name'],
+                $value['password'],
+                $value['email'],
+            );
+            $data['result'] = 'データ登録完了';
+        } catch (Exception $e) {
+            $data['result'] = $e->getMessage();
+            return Response::forge(View::forge('login/create', $data));
+        }
+        return Response::forge(View::forge('login/welcome', $data));
+    }
+
+    /**
+     * ログアウト
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function action_logout()
+    {
+        Auth::logout();
+        return Response::forge(View::forge('login/index'));
+    }
+
+    /**
+     * アカウント情報の変更(名前)
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function action_change_name()
+    {
+		// POSTリクエストでない場合は入力ページへ
+        if (Input::method() != 'POST') {
+            return Response::forge(View::forge('login/change-name'));
+        }
+
+        $val = Validation::forge('create_validation');
+        $val->add('user_name', '名前')
+            ->add_rule('required');
+
+        // バリデーション実行
+        if (!$val->run()) {
+            $data['error'] = 'バリデーションエラー';
+            return Response::forge(View::forge('login/change-name', $data));
+        }
+
+		$value = $val->validated();
+        $email = Auth::get('email');
+
+        $result = Auth::update_user($value, $email);
+        if ($result) {
+            $data['result_name'] = '名前を変更しました。';
+            return Response::forge(View::forge('note/home', $data));
+        } else {
+            $data['result_name'] = '名前の変更に失敗しました。';
+            return Response::forge(View::forge('note/home', $data));
+        }
+    }
+
+    /**
+     * アカウント情報の変更(パスワード)
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function action_change_pass()
+    {
+		// POSTリクエストでない場合は入力ページへ
+        if (Input::method() != 'POST') {
+            return Response::forge(View::forge('login/change-pass'));
+        }
+
+        $val = Validation::forge('create_validation');
+        $val->add('password', 'パスワード')
+            ->add_rule('required')
+            ->add_rule('match_value', Input::post('password_check'));
+
+        // バリデーション実行
+        if (!$val->run()) {
+            $data['error'] = 'バリデーションエラー';
+            return Response::forge(View::forge('login/change-pass', $data));
+        }
+
+		$value = $val->validated();
+        $email = Auth::get('email');
+
+        $result = Auth::update_user($value, $email);
+        if ($result) {
+            $data['result'] = 'パスワードを変更しました。';
+            Auth::logout();
+            return Response::forge(View::forge('login/index', $data));
+        } else {
+            $data['error'] = '変更に失敗しました。';
+            return Response::forge(View::forge('login/change-pass', $data));
+        }
+
+    }
+
+    /**
+     * アカウント情報の変更(リセット)
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function action_reset()
+    {
+		// POSTリクエストでない場合は入力ページへ
+        if (Input::method() != 'POST') {
+            return Response::forge(View::forge('authen/index'));
+        }
+
+        $val = Validation::forge('create_validation');
+        $val->add('password', 'パスワード')
+            ->add_rule('required')
+            ->add_rule('match_value', Input::post('password_check'));
+
+		// sessionが使えたらこれは不要
+		$email = Input::post('email');
+
+        // バリデーション実行
+        if (!$val->run()) {
+			$data['email'] = $email;
+            $data['error'] = 'バリデーションエラー';
+            return Response::forge(View::forge('login/reset', $data));
+        }
+
+		$value = $val->validated();
+		// ここでsessionにあるメールを取得したいが、消えてしまっている
+        //$email = Session::get('email');
+        $result = Auth::update_user($value, $email);
+
+        if ($result) 
+		{
+            $data['result'] = 'パスワードの変更が完了しました。';
+            return Response::forge(View::forge('login/index', $data));
+        } else {
+			$data['email'] = $email;
+            $data['error'] = '更新に失敗しました。';
+            return Response::forge(View::forge('login/reset', $data));
+        }
+    }
+
+    /**
+     * アカウント削除
+     * @access  public
+     * @return  Response
+     *
+     * */
+    public function action_delete()
+    {
+		// POSTリクエストでない場合は確認ページへ
+        if (Input::method() != 'POST') {
+			return Response::forge(View::forge('login/delete'));
 		}
-		return Response::forge(View::forge('login/index'));
-	}
 
-	/*
-	 * ログイン処理
-	 * @access  public
-	 * @return  Response
-	 */
-	public function action_login()
-	{
-		// POSTリクエストの場合にのみ処理を実行する
-		if (Input::method() == 'POST') {
-			$val = Validation::forge('user_validation');
-
-			// メールアドレスとパスワードを取得する
-			$val->add('email', 'メールアドレス')
-				->add_rule('required')
-				->add_rule('valid_email');
-			$val->add('password', 'パスワード')
-				->add_rule('required');
-
-			// メールアドレスとパスワードを検証する
-			if ($val->run()) {
-				// バリデーションに成功したフィールドと値の組を配列で取得
-				$data = $val->validated();
-
-				$auth = Auth::instance();
-				if ($auth->login($data['email'], $data['password'])) {
-					// ログイン成功時の処理
-					return Response::forge(View::forge('note/home'));
-				} else {
-					// ログイン失敗時の処理
-					$data['aiueo'] = 'メールアドレスまたはパスワードが正しくありません。';
-
-					return Response::forge(View::forge('login/welcome', $data));
-				}
-			} else {
-				// バリデーションチェックエラー
-				$data['aiueo'] = 'バリデーションチェックエラー';
-				return Response::forge(View::forge('login/welcome', $data));
-			}
+		// 紐づいているノートの削除
+		$db_result = User::check_foreign_key(Auth::get('user_id'));
+		
+		if ($db_result) {
+			Auth::delete_user(Input::post('email'));
+			$data['result'] = 'アカウント削除が完了しました';
+			return Response::forge(View::forge('login/index', $data));
 		}
-		return Response::forge(View::forge('login/index'));
-	}
-
-	/*
-	 * アカウント作成
-	 * @access  public
-	 * @return  Response
-	 */
-	public function action_create()
-	{
-		// すでにログインしているか
-		if (Auth::check()) {
-			// ログインしていたらホームページへ
-			return Response::forge(View::forge('note/home'));
+		else
+		{
+			$data['error'] = '削除に失敗しました。';
+			return Response::forge(View::forge('login/delete', $data));
 		}
+    }
 
-		if (Input::method() == 'POST') {
-			$val = Validation::forge('create_validation');
-
-			// 名前、メールアドレス、パスワードを検証する
-			$val->add('user_name', '名前')
-				->add_rule('required');
-			$val->add('email', 'メールアドレス')
-				->add_rule('required')
-				->add_rule('valid_email')
-				->add_rule('match_value', $_POST['email_check']);
-			$val->add('password', 'パスワード')
-				->add_rule('required')
-				->add_rule('match_value', $_POST['password_check']);
-
-			// バリデーション実行
-			if ($val->run()) {
-				// バリデーションに成功した場合、dbに登録
-				try {
-					$created = Auth::create_user(
-						Input::post('user_name'),
-						Input::post('password'),
-						Input::post('email'),
-					);
-					$data['aiueo'] = 'success';
-				} catch (Exception $e) {
-					$data['aiueo'] = $e->getMessage();
-				}
-
-				return Response::forge(View::forge('login/welcome', $data));
-			} else {
-				// バリデーション失敗時、作成ページへ
-				$data['create_validation'] = false;
-				return Response::forge(View::forge('login/create', $data));
-			}
-		} else {
-			// POSTなし、"アカウント作成"から来た場合は作成ページへ
-			return Response::forge(View::forge('login/create'));
-		}
-	}
-
-	/*
-	 * ログアウト
-	 * @access  public
-	 * @return  Response
-	 *
-	 * */
-	public function action_logout()
-	{
-		Auth::logout();
-		return Response::forge(View::forge('login/index'));
-	}
-
-	/*
-	 * 登録情報変更
-	 * @access  public
-	 * @return  Response
-	 *
-	 * */
-	public function action_reset()
-	{
-		require_once(__DIR__ . '../../../vendor/GoogleAuthenticator.php');
-		$ga = new PHPGangsta_GoogleAuthenticator();
-
-		// POSTリクエストの場合は認証チェック
-		if (Input::method() == 'POST') {
-			$onecode = Input::post('onecode');
-			$secret = Session::get('secret');
-			$checkResult = $ga->verifyCode($secret, $onecode, 3);
-			if ($checkResult) {
-				return Response::forge(View::forge('login/reset_account'));
-			} else {
-				$data['error'] = 'コードが間違っています。もう一度認証してください。';
-			}
-		}
-		// POSTリクエストでない場合はコード生成
-		$session = Session::instance('secret');
-		$data['secret'] = $ga->createSecret();
-		Session::set('secret', $data['secret']);
-
-		// Google Charts URL のQRコード
-		$data['qrcodeurl'] = $ga->getQRCodeGoogleUrl('ノートアプリ', $data['secret']);
-		return Response::forge(View::forge('login/authenticator', $data));
-	}
-
-	public function action_change()
-	{
-		if (Input::method() == 'POST') {
-			$val = Validation::forge('create_validation');
-
-			// 名前、メールアドレス、パスワードを検証する
-			// $val->add('user_name', '名前')
-			// 	->add_rule('required');
-			$val->add('password', 'パスワード')
-				->add_rule('required')
-				->add_rule('match_value', $_POST['password_check']);
-
-			// バリデーション実行
-			if ($val->run()) {
-				// バリデーションに成功した場合、db更新
-				try {
-						Auth::update_user(
-							array(
-								'password' => Input::post('password'),
-							)
-					);
-					$data['aiueo'] = 'success update';
-				} catch (Exception $e) {
-					$data['aiueo'] = $e->getMessage();
-				}
-				return Response::forge(View::forge('login/welcome', $data));
-			} else {
-				// バリデーション失敗時、作成ページへ
-				$data['create_validation'] = false;
-				return Response::forge(View::forge('login/reset_account', $data));
-			}
-		} else {
-			// POSTなし、"アカウント作成"から来た場合は認証ページへ
-			return Response::forge(View::forge('user_reset'));
-		}
-	}
-
-	/*
-	 * dbテスト
-	 * @access  public
-	 * @return  Response
-	 *
-	 * */
-	public function action_testdb()
-	{
-		//$result = DB::query('SELECT user_id, user_name FROM `users` WHERE user_id = 2', DB::SELECT)->execute();
-		$result = DB::select('*')->from('users')->as_assoc()->execute();
-		//var_dump($result);
-		$data['aiueo'] = 'testdb';
-		return Response::forge(View::forge('login/welcome', $data));
-	}
-
-	public function action_insertdb()
-	{
-
-		list($insert_id, $rows_affected) = DB::insert('users')->set(array(
-			'user_name' => 'John Random',
-			'email' => 'jon@example.com',
-			'password' => 's0_scr3t',
-		))->execute();
-	}
-
-	/*
-	 * The 404 action for the application.
-	 *
-	 * @access  public
-	 * @return  Response
-	 */
-	public function action_404()
-	{
-		return Response::forge(View::forge('login/404'), 404);
-	}
-
+    /**
+     * The 404 action for the application.
+     *
+     * @access  public
+     * @return  Response
+     */
+    public function action_404()
+    {
+        return Response::forge(Presenter::forge('welcome/404'), 404);
+    }
 }

@@ -7,8 +7,7 @@
     <title>ノートアプリ</title>
 </head>
 <body>
-    <div>データ登録完了</div>
-    <div><?php echo $aiueo; ?> </div>
+    <?php echo isset($result) ? $result : '<br>'; ?>
     <br>
     <div><?php echo Html::anchor('user/index', 'ログイン画面へ'); ?></div>
 </body>

@@ -21,10 +21,9 @@
     <div>
         <?php echo Html::anchor('user/reset', 'パスワードを忘れた場合'); ?>
     </div>
-    <br>
-    <div>
-        <?php echo Form::submit('submit', 'ログインする'); ?>
-    </div>
+    <div><?php echo isset($login_error) ? $login_error : '<br>'; ?></div>
+    <div><?php echo isset($result) ? $result : '<br>'; ?></div>
+    <div><?php echo Form::submit('submit', 'ログインする'); ?></div>
     <br>
     <br>
     <div>
