@@ -47,7 +47,8 @@ class Controller_Authenticator extends Controller
         $ga = Session::get('ga');
 
         // POSTリクエストでない場合は入力ページへ
-        if (Input::method() != 'POST') {
+        if (Input::method() != 'POST') 
+        {
             return Response::forge(View::forge('authen/index'));
         }
 
@@ -58,7 +59,8 @@ class Controller_Authenticator extends Controller
             ->add_rule('required')
             ->add_rule('valid_email');
 
-        if (!$val->run()) {
+        if (!$val->run()) 
+        {
             $data['error'] = 'バリデーションチェックエラー';
             return Response::forge(View::forge('authen/index', $data));
         }
@@ -66,26 +68,26 @@ class Controller_Authenticator extends Controller
         $value = $val->validated();
         $email = $value['email'];
 
-        $colmn = 'authenticator';
-        $where = array(
-            'email' => $email,
-        );
-        $secret = User::select_user_orwhere($colmn, $where);
+        $secret = User::get_key($email);
 
         // 一致するメールアドレスがなかった場合
-        if (empty($secret)) {
+        if (empty($secret)) 
+        {
             $data['error'] = 'メールアドレスが正しくないか、認証登録されていません。';
             return Response::forge(View::forge('authen/index', $data));
         }
 
         // 認証チェック
         $checkResult = $ga->verifyCode($secret[0]['authenticator'], $onecode, 3);
-        if ($checkResult) {
+        if ($checkResult) 
+        {
             // 本当はここでセッションに保存し、update_userに使いたい
             //Session::set('email', $email);
             $data['email'] = $email;
             return Response::forge(View::forge('login/reset', $data));
-        } else {
+        } 
+        else 
+        {
             $data['error'] = 'コードが間違っているか、認証登録されていません。';
             return Response::forge(View::forge('authen/index', $data));
         }
@@ -102,15 +104,12 @@ class Controller_Authenticator extends Controller
     {
         $ga = Session::get('ga');
         $email = Auth::get('email');
-        $colmn = 'authenticator';
-        $where = array(
-            'email' => $email,
-        );
 
-        $secret = User::select_user_orwhere($colmn, $where);
+        $secret = User::get_key($email);
 
         // シークレットキーがすでに保存されているか
-        if (isset($secret[0]['authenticator'])) {
+        if (isset($secret[0]['authenticator'])) 
+        {
             $key = $secret[0]['authenticator'];
             $data['qrcodeurl'] = $ga->getQRCodeGoogleUrl($email, $key, 'ノートアプリ');
             return Response::forge(View::forge('authen/change', $data));
@@ -118,21 +117,17 @@ class Controller_Authenticator extends Controller
 
 		// シークレットキーがなければ新しく生成し、保存
         $key = $ga->createSecret();
-        $table = 'users';
-        $colmns = array(
-            'authenticator' => $key,
-        );
-        $where = array(
-            'email' => $email,
-        );
-        $result = User::update_user_orwhere($table, $colmns, $where);
 
-        if ($result) {
+        $result = User::save_key($email, $key);
+
+        if ($result) 
+        {
             $data['qrcodeurl'] = $ga->getQRCodeGoogleUrl($email, $key, 'ノートアプリ');
             return Response::forge(View::forge('authen/change', $data));
-        } else {
+        } 
+        else 
+        {
             $data['result'] = 'キーの保存に失敗しました。QRコードを新しく生成してください。';
-            $data['qrcodeurl'] = $ga->getQRCodeGoogleUrl($email, $key, 'ノートアプリ');
             return Response::forge(View::forge('authen/change', $data));
         }
     }
@@ -150,14 +145,7 @@ class Controller_Authenticator extends Controller
 
         // 新しいシークレットキーを保存する
         $key = $ga->createSecret();
-        $table = 'users';
-        $colmns = array(
-            'authenticator' => $key,
-        );
-        $where = array(
-            'email' => $email,
-        );
-        $result = User::update_user_orwhere($table, $colmns, $where);
+        $result = User::save_key($email, $key);
 
         if ($result) 
 		{
@@ -183,23 +171,14 @@ class Controller_Authenticator extends Controller
         $onecode = Input::post('onecode');
         $email = Auth::get('email');
 
-        $colmn = 'authenticator';
-        $where = array(
-            'email' => $email,
-        );
-        $secret = User::select_user_orwhere($colmn, $where);
-
-		if(is_string($secret))
-		{
-			$data['result'] = $secret;
-			return Response::forge(View::forge('authen/change', $data));
-		}
+        $secret = User::get_key($email);
 
         $checkResult = $ga->verifyCode($secret[0]['authenticator'], $onecode, 3);
         if ($checkResult) 
 		{
             $data['result'] = 'OK!';
-        } else 
+        } 
+        else 
 		{
             $data['result'] = 'コードが間違っています。もう一度入力してください。または、QRコードを新しく生成してください。';
         }

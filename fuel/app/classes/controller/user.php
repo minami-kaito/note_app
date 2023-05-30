@@ -13,6 +13,7 @@
 
 use Fuel\Core\Response;
 use \Model\User;
+use \Model\Note;
 
 /**
  * ユーザーに関する処理
@@ -32,7 +33,8 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
 		if (Auth::check()) 
         {
-            return Response::forge(View::forge('note/home'));
+            $data['result'] = Note::home_note(Auth::get('user_id'));
+            return Response::forge(View::forge('note/home', $data));
         }
 
         return Response::forge(View::forge('login/index'));
@@ -48,7 +50,8 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
         if (Auth::check()) 
         {
-            return Response::forge(View::forge('note/home'));
+            $data['result'] = Note::home_note(Auth::get('user_id'));
+            return Response::forge(View::forge('note/home', $data));
         }
 
 		// POSTリクエストでない場合は入力ページへ
@@ -76,7 +79,8 @@ class Controller_User extends Controller
 		// ログイン検証
         if ($auth->login($value['email'], $value['password'])) 
         {
-            return Response::forge(View::forge('note/home'));
+            $data['result'] = Note::note_list(Auth::get('user_id'));
+            return Response::forge(View::forge('note/home', $data));
         } 
         else 
         {
@@ -95,7 +99,8 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
         if (Auth::check()) 
         {
-            return Response::forge(View::forge('note/home'));
+            $data['result'] = Note::home_note(Auth::get('user_id'));
+            return Response::forge(View::forge('note/home', $data));
         }
 
 		// POSTリクエストでない場合は入力ページへ
@@ -123,20 +128,13 @@ class Controller_User extends Controller
 
         //バリデーション成功時、DBにユーザー登録
 		$value = $val->validated();
-        try 
-        {
-            Auth::create_user(
+        Auth::create_user(
                 $value['user_name'],
                 $value['password'],
                 $value['email'],
-            );
-            $data['result'] = 'データ登録完了';
-        } 
-        catch (Exception $e) 
-        {
-            $data['result'] = $e->getMessage();
-            return Response::forge(View::forge('login/create', $data));
-        }
+        );
+        $data['result'] = 'データ登録完了';
+        
         return Response::forge(View::forge('login/welcome', $data));
     }
 
@@ -300,11 +298,11 @@ class Controller_User extends Controller
 		}
 
 		// 紐づいているノートの削除
-		$db_result = User::check_foreign_key(Auth::get('user_id'));
-		
-		if ($db_result) 
+		Note::delete_allNote(Auth::get('user_id'));
+		$result = Auth::delete_user(Input::post('email'));
+        
+		if ($result) 
         {
-			Auth::delete_user(Input::post('email'));
 			$data['result'] = 'アカウント削除が完了しました';
 			return Response::forge(View::forge('login/index', $data));
 		}
