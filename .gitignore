@@ -2,6 +2,7 @@
 .travis.yml
 *.md
 oil
+debug.log
 
 # the composer package lock file and install directory
 /composer.lock
