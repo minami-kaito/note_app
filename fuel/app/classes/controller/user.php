@@ -33,7 +33,7 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
 		if (Auth::check()) 
         {
-            $data['result'] = Note::home_note(Auth::get('user_id'));
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         }
 
@@ -50,7 +50,7 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
         if (Auth::check()) 
         {
-            $data['result'] = Note::home_note(Auth::get('user_id'));
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         }
 
@@ -99,7 +99,7 @@ class Controller_User extends Controller
         // ログインしていたらホームページへ
         if (Auth::check()) 
         {
-            $data['result'] = Note::home_note(Auth::get('user_id'));
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         }
 
@@ -270,7 +270,7 @@ class Controller_User extends Controller
         //$email = Session::get('email');
         $result = Auth::update_user($value, $email);
 
-        if ($result) 
+            if ($result) 
 		{
             $data['result'] = 'パスワードの変更が完了しました。';
             return Response::forge(View::forge('login/index', $data));
