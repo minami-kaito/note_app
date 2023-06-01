@@ -25,18 +25,26 @@ use \Model\Note;
 class Controller_Note extends Controller
 {
 	/**
+     * ログインしているかのチェック
+     * @access  public
+     *
+     * */
+    public function before()
+    {
+        // ログインしていなかったらログインページへ
+		if (!Auth::check()) 
+		{
+            return Response::redirect('user/index');
+        }
+    }
+
+	/**
 	 *ホームページに戻る
 	 * @access  public
 	 * @return  Response
 	 */
 	public function action_home()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-
 		$data['result'] = Note::note_list(Auth::get('user_id'));
 
 		return Response::forge(View::forge('note/home', $data));
@@ -52,12 +60,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_create()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-
 		$result = Note::new_note(Auth::get('user_id'));
 		$data['current_note'] = $result[0];
 		$content = '';
@@ -76,28 +78,34 @@ class Controller_Note extends Controller
 	 */
 	public function action_save()
 	{
-		// タグが入力されていたらチェック
-		if (Input::post('tag') != '') 
-		{
-			$tags = Input::post('tag');
-			preg_match_all('/#[^\s\xE38080]+/u', $tags, $tag);
-
-			if($tag[0] == null)
-			{
-				$data['tag_error'] = 'タグは先頭に"#"をつけてください。
-				複数入力する場合は、スペースで区切ってください。';
-			}
-		}
+		// POSTリクエストでない場合はホームページへ
+        if (Input::method() != 'POST') 
+        {
+            return Response::redirect('note/home');
+        }
 
 		$note_id = Input::post('note_id');
 
-		// タグの保存とリンク
-		if (isset($tag)) 
-		{	
-			$this->action_link_tag($tag, $note_id);
+		$tags = Input::post('tag', '');
+		// タグが入力されているならチェック
+		if ($tags !== '') 
+		{
+			$tag_result = $this->action_check_tag($tags, $note_id);
+		}
+		// タグが入力されていないなら、問題なし
+		else 
+		{
+			$tag_result = true;
 		}
 
-		$val = Validation::forge('create_validation');
+		// 入力したタグが正規表現と一致しなかった場合
+		if (!$tag_result)
+		{
+			$data['tag_error'] = 'タグは先頭に"#"をつけてください。
+			複数入力する場合は、スペースで区切ってください。';
+		}
+		
+		$val = Validation::forge();
 		$val->add('title', 'タイトル')
 			->add_rule('required');
 
@@ -117,21 +125,10 @@ class Controller_Note extends Controller
 		// ノートの保存
 		Note::save_note($note_id, $title, $content, $share_flag);
 			 
-		$version_result = Note::list_versions($note_id);
-		$count_versions = count($version_result);
+		// 履歴の保存
+		$this->action_save_version($note_id, $content);
 
-		// 履歴が5個未満なら登録
-		if ($count_versions < 5) 
-		{
-			Note::save_version($note_id, $content);
-		} 
-		// 5個以上なら一番古いものと入れ替える
-		else 
-		{
-			Note::update_version($note_id, $content, $version_result[4]['version_at']);
-		}
-
-		$data['result'] = '保存が完了しました';
+		$data['result_save'] = '保存が完了しました';
 		$data['current_note'] = $note_id;
 		$data['result'] = Note::edit_page($data['current_note']);
 
@@ -139,10 +136,9 @@ class Controller_Note extends Controller
 	}
 
 	/**
-	 *タグのリンク
+	 * タグのリンク
 	 *
 	 * @access  private
-	 * @return  Response
 	 */
 	private function action_link_tag(array $tag, string $note_id)
 	{
@@ -173,6 +169,49 @@ class Controller_Note extends Controller
 	}
 
 	/**
+	 * タグのチェック
+	 *
+	 * @access  private
+	 */
+	private function action_check_tag(string $tags, int $note_id)
+	{
+		// 正規表現で確認、区切る
+		preg_match_all('/#[^\s\xE38080]+/u', $tags, $tag);
+
+		if($tag[0] == null)
+		{
+			return false;
+		}
+
+		// タグのリンク、保存
+		$this->action_link_tag($tag, $note_id);
+
+		return true;	
+	}
+
+	/**
+	 * 履歴の保存
+	 *
+	 * @access  private
+	 */
+	private function action_save_version(int $note_id, string $content)
+	{
+		$version_result = Note::list_versions($note_id);
+		$count_versions = count($version_result);
+
+		// 履歴が5個未満なら登録
+		if ($count_versions < 5) 
+		{
+			Note::save_version($note_id, $content);
+		} 
+		// 5個以上なら一番古いものと入れ替える
+		else 
+		{
+			Note::update_version($note_id, $content, $version_result[4]['version_at']);
+		}
+	}
+
+	/**
 	 *ノートページを開く
 	 *
 	 * @access  public
@@ -180,12 +219,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_page()
 	{
-		// ログインチェック
-		if (!Auth::check())
-		{
-			return Response::forge(View::forge('login/index'));
-		}
-
 		$data['current_note'] = Input::get('noteid');
 		$data['result'] = Note::edit_page($data['current_note']);
 
@@ -200,12 +233,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_delete()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-
 		$note_id = Input::get('noteid');
 		Note::delete_note($note_id);
 		$data['delete_result'] = 'ノートを削除しました';
@@ -222,12 +249,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_restoration()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-
 		// GET,POSTじゃないなら、ホームへ
 		if (Input::method() != 'POST' and Input::method() != 'GET') 
 		{
@@ -280,12 +301,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_delete_tag()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-
 		$tag_name = Input::get('tagname');
 		$note_id = Input::get('noteid');
 		Note::delete_note_tag($tag_name, $note_id);
@@ -303,12 +318,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_browse()
 	{
-		// ログインチェック
-		if (!Auth::check())
-		{
-			return Response::forge(View::forge('login/index'));
-		}
-		
 		$data['current_note'] = Input::get('noteid');
 		$data['result'] = Note::edit_page($data['current_note']);
 		$result = $data['result'];
@@ -348,12 +357,6 @@ class Controller_Note extends Controller
 	 */
 	public function action_search()
 	{
-		// ログインしていなかったらログインページへ
-		if (!Auth::check()) 
-		{
-            return Response::forge(View::forge('login/index'));
-        }
-		
 		// スペースのみの場合空文字に変換
 		$val_text = Input::get('search');
 		$val_text = preg_replace("/\s*|　*/", '', $val_text);
