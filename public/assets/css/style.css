@@ -1,0 +1,8 @@
+body {
+    font-family: 'Noto Sans JP', "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+  }
+
+h1 {
+    text-align: center;
+    font-size: calc(1.325rem + .9vw);
+}
