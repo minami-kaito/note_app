@@ -34,6 +34,7 @@
             <div class="col-6">
                 <?php echo Form::label('ユーザー名', 'user_name', array('for' => "val1", 'class' => "form-label")); ?>
                 <?php echo Form::input('user_name', '', array('class' => 'form-control', 'id' => 'val1')); ?>
+                <?php echo isset($error_user_name) ? $error_user_name : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -45,6 +46,7 @@
             <div class="col-6">
                 <?php echo Form::label('メールアドレス', 'email', array('for' => "val2", 'class' => "form-label")); ?>
                 <?php echo Form::input('email', '', array('class' => 'form-control', 'id' => 'val2')); ?>
+                <?php echo isset($error_email) ? $error_email : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -55,6 +57,7 @@
             <div class="col-6">
                 <?php echo Form::label('', 'email_check', array('for' => "val3", 'class' => "form-label")); ?>
                 <?php echo Form::input('email_check', '', array('class' => 'form-control', 'id' => 'val3', 'placeholder'=>'メールアドレスの確認')); ?>
+                <?php echo isset($error_email) ? $error_email : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -65,6 +68,7 @@
             <div class="col-6">
                 <?php echo Form::label('パスワード', 'password', array('for' => "val4", 'class' => "form-label")); ?>
                 <?php echo Form::password('password', '', array('class' => 'form-control', 'id' => 'val4')); ?>
+                <?php echo isset($error_password) ? $error_password : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -75,6 +79,7 @@
             <div class="col-6">
                 <?php echo Form::label('', 'password_check', array('for' => "val5", 'class' => "form-label")); ?>
                 <?php echo Form::password('password_check', '', array('class' => 'form-control', 'id' => 'val5', 'placeholder' => 'パスワードを再入力')); ?>
+                <?php echo isset($error_password) ? $error_password : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
