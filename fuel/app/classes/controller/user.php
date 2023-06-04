@@ -200,11 +200,13 @@ class Controller_User extends Controller
         if ($result) 
         {
             $data['result_name'] = '名前を変更しました。';
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         } 
         else 
         {
             $data['result_name'] = '名前の変更に失敗しました。';
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         }
     }
