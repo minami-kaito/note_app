@@ -33,6 +33,7 @@
             <div class="col-6">
                 <?php echo Form::label('メールアドレス', 'email', array('for' => "val1", 'class' => "form-label")); ?>
                 <?php echo Form::input('email', '', array('class' => 'form-control', 'id' => 'val1')); ?>
+                <?php echo isset($error_email) ? $error_email : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -44,6 +45,7 @@
             <div class="col-6">
                 <?php echo Form::label('パスワード', 'password', array('for' => "val2", 'class' => "form-label")); ?>
                 <?php echo Form::password('password', '', array('class' => 'form-control', 'id' => 'val2')); ?>
+                <?php echo isset($error_password) ? $error_password : ''; ?>
             </div>
             <div class="col-3"></div>
         </div>
@@ -66,7 +68,7 @@
             <div class="col-2"></div>
             <div class="col-8">
                 <div class="text-center">
-                <?php echo isset($login_error) ? $login_error : ''; ?>
+                <?php echo isset($error) ? $error : ''; ?>
                 <?php echo isset($result) ? $result : ''; ?>
                 </div>
             </div>

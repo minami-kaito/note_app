@@ -5,23 +5,54 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php echo Asset::css('sanitize.css'); ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
 
 <body>
     <?php echo Form::open(array('action' => 'note/search', 'method' => 'get')); ?>
-    <div><?php echo Html::anchor('note/home', 'ホーム'); ?></div>
-    <div>
-        <?php echo Form::input('search'); ?>
-        <?php echo Form::submit('submit', '検索'); ?>
+    <svg class="bd-placeholder-img mw-100" width="100%" height="30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Max-width 100%"></svg>
+
+    <!-- 上部メニュー -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <div class="mx-4">
+                    <?php echo Html::anchor('note/home', '<i class="bi bi-house"></i></br><span class="icon">ホーム</span>', array('class' => 'btn btn-outline-secondary')); ?>
+                </div>
+            </div>
+            <div class="col-6">
+            <div class="my-3">
+                <div class="input-group mb-3">
+                <?php echo Form::input('search', '', array('class' => 'form-control', 'aria-describedby' => "button-addon2")); ?>
+                <?php echo Form::button('submit', '<i class="bi bi-search"></i>', array('class' => "btn btn-outline-secondary", 'type' => 'submit', 'id' => "button-addon2")); ?></span>
+            </div>
+            <p class="text-center"><?php echo isset($search_empty) ? $search_empty : ''; ?></p>
+            </div>
+            </div>
+            <div class="col-3">
+                <div class="mx-4">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                <div class="p-2 bd-highlight">
+                    <?php echo Html::anchor('', '<i class="bi bi-gear"></i></br><span class="icon">&ensp;設定&ensp;</span>', array('class' => 'btn btn-outline-secondary')); ?>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div><?php echo isset($search_empty) ? $search_empty : ''; ?></div>
-    <br>
+
     <!-- 設定メニュー -->
     <article>
         <div><?php echo '名前：' . Auth::get('user_name'); ?></div>
         <div><?php echo isset($result_name) ? $result_name : ''; ?></div>
-        <div><?php echo 'ユーザーID : ' .Auth::get('user_id'); ?></div>
+        <div><?php echo 'ユーザーID : ' . Auth::get('user_id'); ?></div>
         <div><?php echo Auth::get('email'); ?></div>
         <div><?php echo Html::anchor('user/change_name', '名前の変更'); ?></div>
         <div><?php echo Html::anchor('user/change_pass', 'パスワードの変更'); ?></div>
@@ -34,31 +65,53 @@
         <?php echo isset($delete_result) ? $delete_result : ''; ?>
     </div>
     <br>
-    <div><?php echo Html::anchor('note/create', '新規ノート作成'); ?></div>
+    <div><?php echo Html::anchor('note/create', '新規ノート作成', array('class' => 'btn btn-secondary')); ?></div>
     <div>1ページ目</div>
-    <div>
-        <!-- ノートリスト表示 -->
-        <?php if (isset($result)) : ?>        
-            <?php foreach ($result as $note_list) : ?>
-            <li>
-                <?php echo Html::anchor(Uri::create('note/page', array(), array('noteid' => $note_list['note_id'])), $note_list['title']); ?>
+
+    <!-- ノート一覧 -->
+    <div class="container">
+    <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ノートタイトル</th>
+          <th scope="col">ノート閲覧ボタン</th>
+          <th scope="col">更新日時</th>
+          <th scope="col">削除する</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (isset($result)): ?>
+            <?php foreach ($result as $note_list): ?>
+        <tr>
+          <td>
+            <div class="note-title">
+            <?php echo Html::anchor(Uri::create('note/page', array(), array('noteid' => $note_list['note_id'])), $note_list['title']); ?>
+            <div class="tag-list">
                 <!-- タグ表示 -->
-                <?php if($note_list['tag_name'] !== null) : ?>
-                    <?php $tag_name = explode(',', $note_list['tag_name']); ?>
-                    <?php foreach ($tag_name as $name) : ?>
-                        <?php echo '#' .$name; ?>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-                
-                <?php echo Html::anchor(Uri::create('note/browse', array(), array('noteid' => $note_list['note_id'])), '閲覧モード'); ?>
-                <?php echo $note_list['updated_at']; ?>
-                <?php echo Html::anchor(Uri::create('note/delete', array(), array('noteid' => $note_list['note_id'])), '削除する'); ?>
-            </li>
-            <?php endforeach; ?>
-        <?php endif; ?>
+                <?php if ($note_list['tag_name'] !== null): ?>
+                    <?php $tag_name = explode(',', $note_list['tag_name']);?>
+                    <?php foreach ($tag_name as $name): ?>
+                        <?php echo '<span>#' . $name . '</span>'; ?>
+                    <?php endforeach;?>
+                <?php endif;?>
+            </div>
+            </div>
+          </td>
+          <td><?php echo Html::anchor(Uri::create('note/browse', array(), array('noteid' => $note_list['note_id'], 'class' => 'btn btn-primary')), '閲覧モード'); ?></td>
+          <td><?php echo $note_list['updated_at']; ?></td>
+          <td><?php echo Html::anchor(Uri::create('note/delete', array(), array('noteid' => $note_list['note_id'], 'class' => 'btn btn-primary')), '削除する'); ?></td>
+        </tr>
+            <?php endforeach;?>
+        <?php endif;?>
+      </tbody>
+    </table>
     </div>
+    </div>
+
     <br>
     <div>1/3ページ</div>
     <?php echo Form::close(); ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

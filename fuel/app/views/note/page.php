@@ -70,6 +70,7 @@
     <div>
         <?php echo (isset($error)) ? $error : ''; ?>
         <?php echo (isset($result_version)) ? $result_version : ''; ?>
+        <?php echo (isset($result_save)) ? $result_save : ''; ?>
     </div>
     <div>
         <?php echo Form::textarea('content', $result[0]['content'], array('rows' => 55, 'cols' => 200)); ?>

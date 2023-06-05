@@ -25,7 +25,6 @@ class Controller_Authenticator extends Controller
     /**
      * Google Authenticatorを使うための初期処理
      * @access  public
-     * @return  Response
      *
      * */
     public function before()
@@ -52,7 +51,7 @@ class Controller_Authenticator extends Controller
             return Response::forge(View::forge('authen/index'));
         }
 
-        $onecode = Input::post('onecode');
+        $onecode = Input::post('onecode', '');
 
         $val = Validation::forge('user_validation');
         $val->add('email', 'メールアドレス')
@@ -61,7 +60,7 @@ class Controller_Authenticator extends Controller
 
         if (!$val->run()) 
         {
-            $data['error'] = 'バリデーションチェックエラー';
+            $data['error'] = 'メールアドレスが正しく入力されていません';
             return Response::forge(View::forge('authen/index', $data));
         }
     
@@ -167,8 +166,14 @@ class Controller_Authenticator extends Controller
      * */
     public function action_test()
     {
+        // POSTリクエストでない場合は認証設定ページへ
+        if (Input::method() != 'POST') 
+        {
+            return Response::forge(View::forge('authen/change'));
+        }
+
 		$ga = Session::get('ga');
-        $onecode = Input::post('onecode');
+        $onecode = Input::post('onecode', '');
         $email = Auth::get('email');
 
         $secret = User::get_key($email);

@@ -6,3 +6,61 @@ h1 {
     text-align: center;
     font-size: calc(1.325rem + .9vw);
 }
+
+.bi-house {
+  font-size: 20px;
+}
+
+.bi-search {
+  font-size: 20px;
+}
+
+.bi-gear {
+  font-size: 20px;
+}
+
+.icon {
+  font-size: 15px;
+}
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  table-layout: fixed;
+}
+.note-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  table-layout: fixed;
+  width: 800px;
+}
+
+.fixed-width {
+  flex-shrink: 0;
+  width: 120px; /* 任意の幅を指定 */
+}
+
+.tag-list {
+  margin-top: 5px;
+  color: #6c757d;
+}
+
+@media screen and (max-width:480px){
+  td{
+      width: 25%;
+  }
+}
+@media screen and (min-width:781px){
+  .td-min{
+      width: 15%;
+  }
+  .td-max{
+      width: 35%;
+  }
+}

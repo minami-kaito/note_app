@@ -60,7 +60,7 @@ class Controller_User extends Controller
             return Response::forge(View::forge('login/index'));
         }
 
-        $val = Validation::forge('user_validation');
+        $val = Validation::forge();
         $val->add('email', 'メールアドレス')
             ->add_rule('required')
             ->add_rule('valid_email');
@@ -69,7 +69,10 @@ class Controller_User extends Controller
 
         if (!$val->run()) 
         {
-            $data['login_error'] = 'バリデーションチェックエラー';
+            foreach ($val->error() as $field => $error)
+            {
+                $data['error_'.$field] = $error->get_message();
+            }
             return Response::forge(View::forge('login/index', $data));
         }
 
@@ -84,7 +87,7 @@ class Controller_User extends Controller
         } 
         else 
         {
-            $data['login_error'] = 'メールアドレスまたはパスワードが正しくありません。';
+            $data['error'] = 'メールアドレスまたはパスワードが正しくありません。';
             return Response::forge(View::forge('login/index', $data));
         }
     }
@@ -109,7 +112,7 @@ class Controller_User extends Controller
             return Response::forge(View::forge('login/create'));
         }
 
-        $val = Validation::forge('create_validation');
+        $val = Validation::forge();
         $val->add('user_name', '名前')
             ->add_rule('required');
         $val->add('email', 'メールアドレス')
@@ -122,7 +125,10 @@ class Controller_User extends Controller
 
         if (!$val->run()) 
         {
-            $data['error'] = 'バリデーションエラー';
+            foreach ($val->error() as $field => $error)
+            {
+                $data['error_'.$field] = $error->get_message();
+            }
             return Response::forge(View::forge('login/create', $data));
         }
 
@@ -146,6 +152,12 @@ class Controller_User extends Controller
      * */
     public function action_logout()
     {
+        // ログインしていなかったらログインページへ
+		if (!Auth::check()) 
+		{
+            return Response::forge(View::forge('login/index'));
+        }
+
         Auth::logout();
         return Response::forge(View::forge('login/index'));
     }
@@ -158,20 +170,26 @@ class Controller_User extends Controller
      * */
     public function action_change_name()
     {
+        // ログインしていなかったらログインページへ
+		if (!Auth::check()) 
+		{
+            return Response::forge(View::forge('login/index'));
+        }
+
 		// POSTリクエストでない場合は入力ページへ
         if (Input::method() != 'POST') 
         {
             return Response::forge(View::forge('login/change-name'));
         }
 
-        $val = Validation::forge('create_validation');
+        $val = Validation::forge();
         $val->add('user_name', '名前')
             ->add_rule('required');
 
         // バリデーション実行
         if (!$val->run()) 
         {
-            $data['error'] = 'バリデーションエラー';
+            $data['error'] = '名前が空欄になっています';
             return Response::forge(View::forge('login/change-name', $data));
         }
 
@@ -182,11 +200,13 @@ class Controller_User extends Controller
         if ($result) 
         {
             $data['result_name'] = '名前を変更しました。';
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         } 
         else 
         {
             $data['result_name'] = '名前の変更に失敗しました。';
+            $data['result'] = Note::note_list(Auth::get('user_id'));
             return Response::forge(View::forge('note/home', $data));
         }
     }
@@ -199,13 +219,19 @@ class Controller_User extends Controller
      * */
     public function action_change_pass()
     {
+        // ログインしていなかったらログインページへ
+		if (!Auth::check()) 
+		{
+            return Response::forge(View::forge('login/index'));
+        }
+
 		// POSTリクエストでない場合は入力ページへ
         if (Input::method() != 'POST') 
         {
             return Response::forge(View::forge('login/change-pass'));
         }
 
-        $val = Validation::forge('create_validation');
+        $val = Validation::forge();
         $val->add('password', 'パスワード')
             ->add_rule('required')
             ->add_rule('match_value', Input::post('password_check'));
@@ -213,7 +239,7 @@ class Controller_User extends Controller
         // バリデーション実行
         if (!$val->run()) 
         {
-            $data['error'] = 'バリデーションエラー';
+            $data['error'] = 'パスワードが空欄か、確認入力と一致していません';
             return Response::forge(View::forge('login/change-pass', $data));
         }
 
@@ -243,13 +269,20 @@ class Controller_User extends Controller
      * */
     public function action_reset()
     {
+        // ログインしていたらホームページへ
+		if (Auth::check()) 
+        {
+            $data['result'] = Note::note_list(Auth::get('user_id'));
+            return Response::forge(View::forge('note/home', $data));
+        }
+
 		// POSTリクエストでない場合は入力ページへ
         if (Input::method() != 'POST') 
         {
             return Response::forge(View::forge('authen/index'));
         }
 
-        $val = Validation::forge('create_validation');
+        $val = Validation::forge();
         $val->add('password', 'パスワード')
             ->add_rule('required')
             ->add_rule('match_value', Input::post('password_check'));
@@ -261,7 +294,7 @@ class Controller_User extends Controller
         if (!$val->run()) 
         {
 			$data['email'] = $email;
-            $data['error'] = 'バリデーションエラー';
+            $data['error'] = 'パスワードが空欄か、確認入力と一致していません';
             return Response::forge(View::forge('login/reset', $data));
         }
 
@@ -291,6 +324,12 @@ class Controller_User extends Controller
      * */
     public function action_delete()
     {
+        // ログインしていなかったらログインページへ
+		if (!Auth::check()) 
+		{
+            return Response::forge(View::forge('login/index'));
+        }
+
 		// POSTリクエストでない場合は確認ページへ
         if (Input::method() != 'POST') 
         {
