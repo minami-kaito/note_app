@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
@@ -81,7 +82,7 @@
             <div class="col-4"></div>
             <div class="col-4">
                 <div class="text-center">
-                <?php echo Form::submit('submit', 'ログインする', array('class' => 'btn btn-primary')); ?>
+                <?php echo Form::button('submit', '<i class="bi bi-box-arrow-in-right"></i>&emsp;ログインする', array('class' => 'btn btn-secondary btn-lg')); ?>
                 </div>
             </div>
             <div class="col-4"></div>

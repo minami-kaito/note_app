@@ -1,5 +1,6 @@
 body {
     font-family: 'Noto Sans JP', "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+    z-index: 1;
   }
 
 h1 {
@@ -19,26 +20,86 @@ h1 {
   font-size: 20px;
 }
 
-.icon {
-  font-size: 15px;
+.bi-trash {
+  font-size: 20px;
+  text-align: center;
 }
+
+.bi-list {
+  font-size: 18px;
+}
+
+.bi-arrow-return-left {
+  font-size: 17px;
+}
+
+.small {
+  font-size: 10px;
+}
+
+.bi-pencil-square {
+  font-size: 20px;
+}
+
+.bi-box-arrow-in-right {
+  font-size: 23px;
+}
+
+.bi-x-circle {
+  color: antiquewhite;
+}
+
+.note-center {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.setting-menu {
+  text-align: center;
+  z-index: 3;
+}
+
+.card-body {
+  position: absolute;
+}
+
+.note-menu {
+  text-align: center;
+  line-height: 2.5;
+}
+.bi-file-earmark-plus {
+  font-size: 20px;
+}
+
 td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   table-layout: fixed;
 }
+
 .note-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   table-layout: fixed;
   width: 800px;
+  font-size: 18px;
+}
+
+.version-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  table-layout: fixed;
+  width: 900px;
+  font-size: 18px;
 }
 
 .fixed-width {
@@ -51,16 +112,35 @@ th {
   color: #6c757d;
 }
 
-@media screen and (max-width:480px){
-  td{
-      width: 25%;
-  }
+.share-url {
+  text-align: right;
 }
-@media screen and (min-width:781px){
-  .td-min{
-      width: 15%;
-  }
-  .td-max{
-      width: 35%;
-  }
+
+.button-left {
+ float: left;
+}
+
+.button-right {
+  float: right;
+}
+
+.page-item {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 25px;
+  color: blue;
+}
+
+.page-link {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 25px;
+  color: blue;
+}
+
+.pagination {
+  vertical-align: middle;
+  text-align: center;
+  width: 200px;
+  margin: auto;
 }

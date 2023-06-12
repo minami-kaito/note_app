@@ -11,7 +11,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function note_list(int $user_id)
+    public static function note_list($user_id)
     {
         try
         {
@@ -48,7 +48,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function edit_page(int $note_id)
+    public static function edit_page($note_id)
     {
         try
         {
@@ -89,7 +89,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function delete_note(int $note_id)
+    public static function delete_note($note_id)
     {
         try
         {
@@ -121,7 +121,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function delete_allNote(int $user_id)
+    public static function delete_allNote($user_id)
     {
         try
         {
@@ -156,7 +156,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function new_note(int $user_id)
+    public static function new_note($user_id)
     {
         try
         {
@@ -178,7 +178,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function save_note(int $note_id, string $title, string $content, int $share)
+    public static function save_note($note_id, string $title, string $content, $share)
     {
         try
         {
@@ -244,7 +244,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function link_tag(int $note_id, int $tag_id)
+    public static function link_tag($note_id, $tag_id)
     {
         try
         {
@@ -265,7 +265,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function get_linkid(int $note_id, int $tag_id)
+    public static function get_linkid($note_id, $tag_id)
     {
         try
         {
@@ -289,7 +289,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function delete_note_tag(string $tag_name, int $note_id)
+    public static function delete_note_tag(string $tag_name, $note_id)
     {
         try
         {
@@ -318,7 +318,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function save_version(int $note_id, string $content)
+    public static function save_version($note_id, string $content)
     {
         try
         {
@@ -339,7 +339,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function update_version(int $note_id, string $content, $old_version)
+    public static function update_version($note_id, string $content, $old_version)
     {
         try
         {
@@ -361,7 +361,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function list_versions(int $note_id)
+    public static function list_versions($note_id)
     {
         try
         {
@@ -385,7 +385,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function get_version(int $version_id)
+    public static function get_version($version_id)
     {
         try
         {
@@ -408,7 +408,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function restoration_note(int $note_id, string $veriosn_content)
+    public static function restoration_note($note_id, string $veriosn_content)
     {
         try
         {
@@ -429,7 +429,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function delete_restoration(int $version_id)
+    public static function delete_restoration($version_id)
     {
         try
         {
@@ -509,7 +509,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function search_list(int $note_id)
+    public static function search_list($note_id)
     {
         try
         {

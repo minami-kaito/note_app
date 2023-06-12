@@ -9,6 +9,7 @@ debug.log
 /composer.json
 /composer.phar
 /fuel/vendor
+/node_modules
 
 # any of the fuel packages installed by default
 /fuel/core/
@@ -18,6 +19,7 @@ debug.log
 /fuel/packages/orm/
 /fuel/packages/parser/
 /public/docs/
+/src/
 
 # dynamically generated files
 /fuel/app/logs/*/*/*
