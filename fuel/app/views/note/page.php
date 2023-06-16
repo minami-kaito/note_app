@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
     <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
@@ -100,7 +101,7 @@
     <div class="container">
     <div class="row">
         <div class="col-2">
-            <button type="button" class="btn btn-outline-info" data-bs-toggle="collapse" data-bs-target="#note-menu" aria-expanded="false" aria-controls="note-menu">
+            <button type="button" class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#note-menu" aria-expanded="false" aria-controls="note-menu">
                 <i class="bi bi-list"></i>
                 <div class="small">メニュー</div>
             </button>
@@ -114,26 +115,34 @@
         </div>               
         <div class="col-8">
             文字設定メニュー
-            <?php echo Form::button('submit', '<i class="bi bi-pencil-square"></i><div>&nbsp;保存&nbsp;</div>', array('class' => "btn btn-outline-success")); ?>
+            <?php echo Form::button('submit', '<i class="bi bi-pencil-square"></i><div class="small">&nbsp;保存&nbsp;</div>', array('class' => "btn btn-success")); ?>
         </div>
         <div class="col-2">
-            <p class="form-check">
-            <?php echo Form::label('共有する', 'share', array('class' => "form-check-label", 'for' => "share")); ?>
-            <?php echo Form::input('share', 1, array('class' => "form-check-input", 'type' => "radio", 'id' => "flexRadioDefault1", ($result[0]['share_flag'] ? 'checked' : ''))); ?>
-            </p>
-            <p class="form-check">
-            <?php echo Form::label('共有しない', 'share', array('class' => "form-check-label", 'for' => "share")); ?>
-            <?php echo Form::input('share', 0, array('class' => "form-check-input", 'type' => "radio", 'id' => "flexRadioDefault1", ($result[0]['share_flag'] ? '' : 'checked'))); ?>
-            </p>
+            <?php if ($result[0]['share_flag'] === 0) : ?>
+                <div class="lock">
+                <i class="bi bi-lock"></i><span class="share-text">プライベート</span>
+                </div>
+            <?php elseif ($result[0]['share_flag'] === 1) : ?>
+                <div class="unlock">
+                <i class="bi bi-unlock"></i><span class="share-text">共有中</span>
+                </div>
+            <?php endif; ?>
+            <div class="share-switch">
+            <div class="form-check form-switch">
+                <?php echo Form::hidden('share', 0); ?>
+                <?php echo Form::label('共有する', 'share', array('class' => 'form-check-label', 'for' => 'flexSwitchCheckDefault')); ?>
+                <?php echo Form::input('share', 1, array('class' => 'form-check-input', 'type' => 'checkbox', 'id' => 'flexSwitchCheckDefault', ($result[0]['share_flag'] ? 'checked' : ''))); ?>
+            </div>
+            </div>
+            <div class="mt-2">
+            <div class="share-url">
+                <?php if($result[0]['share_flag']): ?>
+                <?php echo Form::hidden('copy', Uri::create('note/browse', array(), array('noteid' => $current_note)), array('data-bind' => 'value: textToCopy', 'id' => 'myInput')); ?>
+                <?php echo Form::button('copy', 'URLをコピー', array('class' => 'btn btn-outline-info rounded-pill', 'data-bind' => 'click: copyText')); ?>
+                <?php endif; ?>
+            </div>
+            </div>
         </div>
-    </div>
-    </div>
-
-    <div class="mx-4">
-    <div class="share-url">
-        <?php if($result[0]['share_flag']): ?>
-            <?php echo '共有URL : ' .Uri::create('note/browse', array(), array('noteid' => $current_note)); ?>
-        <?php endif; ?>
     </div>
     </div>
 
@@ -145,11 +154,14 @@
 
     <div class="mx-4">
         <label for="exampleFormControlTextarea1" class="form-label"></label>
-        <?php echo Form::textarea('content', $result[0]['content'], array('class' => 'form-control', 'id' => 'exampleFormControlTextarea1', 'rows' => 50)); ?>
+        <?php echo Form::textarea('content', $result[0]['content'], array('class' => 'form-control', 'id' => 'exampleFormControlTextarea1', 'rows' => 35)); ?>
         <?php echo Form::hidden('note_id', $result[0]['note_id']); ?>
     </div>
     <?php echo Form::close(); ?>
+    <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+    <?php echo Asset::js('copy.js', array('type' => 'module')); ?>
 </body>
 
 </html>
