@@ -3,6 +3,7 @@
 *.md
 oil
 debug.log
+webpack.config.js
 
 # the composer package lock file and install directory
 /composer.lock
@@ -19,7 +20,10 @@ debug.log
 /fuel/packages/orm/
 /fuel/packages/parser/
 /public/docs/
+/public/lexical-playground
 /src/
+/dist/
+
 
 # dynamically generated files
 /fuel/app/logs/*/*/*
