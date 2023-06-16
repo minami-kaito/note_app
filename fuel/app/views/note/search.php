@@ -4,54 +4,88 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php echo Asset::css('sanitize.css'); ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
 <body>
-    <h1>ノートの検索結果</h1>
-    <div>
     <?php echo Form::open(array('action' => 'note/search', 'method' => 'get')); ?>
-    <div><?php echo Html::anchor('note/home', 'ホーム'); ?></div>
-    <div>
-        <?php echo Form::input('search'); ?>
-        <?php echo Form::submit('submit', '検索'); ?>
-    </div>
-    <div>
-        <?php echo '検索ワード：' .$search_text; ?>
-    </div>
-    <br>
-    <!-- 設定メニュー -->
-    <article>
-        <div><?php echo '名前：' . Auth::get('user_name'); ?></div>
-        <div><?php echo Auth::get('email'); ?></div>
-        <div><?php echo Html::anchor(Uri::create('user/change', array(), array('item' => 'name')), '名前の変更'); ?></div>
-        <div><?php echo Html::anchor(Uri::create('user/change', array(), array('item' => 'password')), 'パスワードの変更'); ?></div>
-        <div><?php echo Html::anchor('user/logout', 'ログアウトする'); ?></div>
-        <div><?php echo Html::anchor('user/delete', 'アカウント削除'); ?></div>
-    </article>
-    <br>
-    <div>1ページ目</div>
-    <div>
-        <?php foreach($result as $result) : ?>
-            <li>
-            <?php echo Html::anchor(Uri::create('note/page', array('id' => $result['note_id']), array('noteid' => ':id')), $result['title']); ?>
-            <?php echo '  '; ?>
-            <div>
-            <!-- タグ表示 -->
-            <?php if ($result['tag_name'] !== null) : ?>
-                <?php $tag_name = explode(',', $result['tag_name']); ?>
-                    <?php foreach ($tag_name as $name) : ?>
-                        <?php echo '#' .$name; ?>
-                    <?php endforeach; ?>
-            <?php endif; ?>
+    <svg class="bd-placeholder-img mw-100" width="100%" height="30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Max-width 100%"></svg> 
+    <h1>ノートの検索結果</h1>
+    
+    <!-- 上部メニュー -->
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <div class="mx-4">
+                    <?php echo Html::anchor('note/home', '<i class="bi bi-house"></i></br><span class="icon">ホーム</span>', array('class' => 'btn btn-outline-secondary')); ?>
+                </div>
             </div>
-            <?php echo Html::anchor(Uri::create('note/browse', array('id' => $result['note_id']), array('noteid' => ':id')), '閲覧モード'); ?>
-            <?php echo $result['updated_at']; ?>
-            <?php echo Html::anchor(Uri::create('note/delete', array('id' => $result['note_id']), array('noteid' => ':id')), '削除する'); ?>
-            </li>
-        <?php endforeach; ?>
+            <div class="col-6">
+            <div class="my-3">
+                <div class="input-group mb-3">
+                <?php echo Form::input('search', '', array('class' => 'form-control', 'aria-describedby' => "button-addon2")); ?>
+                <?php echo Form::button('submit', '<i class="bi bi-search"></i>', array('class' => "btn btn-outline-secondary", 'type' => 'submit', 'id' => "button-addon2")); ?></span>
+            </div>
+            <p class="text-center">
+                <?php echo '検索ワード：' .$search_text; ?>
+            </p>
+            </div>
+            </div>
+            <div class="col-3">
+                <div class="mx-4">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                <div class="p-2 bd-highlight">
+                    <p>
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="bi bi-gear"></i></br><span class="icon">&ensp;設定&ensp;</span>
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <!-- 設定メニュー -->
+                        <div class="setting-menu">
+                        <div><?php echo '名前：' . Auth::get('user_name'); ?></div>
+                        <div><?php echo isset($result_name) ? $result_name : ''; ?></div>
+                        <div><?php echo Auth::get('email'); ?></div>
+                        <br>
+                        <div><?php echo Html::anchor('user/change_name', '名前の変更'); ?></div>
+                        <div><?php echo Html::anchor('user/change_pass', 'パスワードの変更'); ?></div>
+                        <div><?php echo Html::anchor('authenticator/change', '認証の設定'); ?></div>
+                        <div><?php echo Html::anchor('user/logout', 'ログアウトする'); ?></div>
+                        <br>
+                        <div><?php echo Html::anchor('user/delete', 'アカウント削除'); ?></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
     <br>
-    <div>1/3ページ</div>
+    <!-- ノート一覧 -->
+    <div id="container"></div>
     <?php echo Form::close(); ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Load our React component. -->
+    <script>const js_array = JSON.parse('<?php echo json_encode($result); ?>');</script>
+    <?php echo Asset::js('home.js', array('type' => 'module')); ?>
 </body>
 </html>

@@ -1,5 +1,6 @@
 body {
     font-family: 'Noto Sans JP', "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+    z-index: 1;
   }
 
 h1 {
@@ -19,26 +20,101 @@ h1 {
   font-size: 20px;
 }
 
-.icon {
-  font-size: 15px;
+.bi-trash {
+  font-size: 20px;
+  text-align: center;
 }
+
+.bi-list {
+  font-size: 25px;
+}
+
+.bi-arrow-return-left {
+  font-size: 17px;
+}
+
+.small {
+  font-size: 10px;
+}
+
+.bi-pencil-square {
+  font-size: 23px;
+}
+
+.bi-box-arrow-in-right {
+  font-size: 23px;
+}
+
+.bi-x-circle {
+  color: antiquewhite;
+}
+
+.bi-lock {
+  font-size: 25px;
+  color: rgb(51, 144, 202);
+}
+
+.bi-unlock {
+  font-size: 25px;
+  color: rgb(51, 144, 202);
+}
+
+.share-text {
+  font-size: 15px;
+  color: #7b7f84;
+}
+
+.note-center {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.setting-menu {
+  text-align: center;
+  z-index: 3;
+}
+
+.card-body {
+  position: absolute;
+}
+
+.note-menu {
+  text-align: center;
+  line-height: 2.5;
+}
+.bi-file-earmark-plus {
+  font-size: 20px;
+}
+
 td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   table-layout: fixed;
 }
+
 .note-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   table-layout: fixed;
   width: 800px;
+  font-size: 18px;
+}
+
+.version-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  table-layout: fixed;
+  width: 900px;
+  font-size: 18px;
 }
 
 .fixed-width {
@@ -51,16 +127,59 @@ th {
   color: #6c757d;
 }
 
-@media screen and (max-width:480px){
-  td{
-      width: 25%;
-  }
+.share-url {
+  text-align: right;
 }
-@media screen and (min-width:781px){
-  .td-min{
-      width: 15%;
-  }
-  .td-max{
-      width: 35%;
-  }
+
+.button-left {
+ float: left;
+}
+
+.button-right {
+  float: right;
+}
+
+.page-item {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 15px;
+  color: blue;
+}
+
+.page-link {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 15px;
+  color: blue;
+}
+
+.pagination {
+  vertical-align: middle;
+  text-align: center;
+  width: 135px;
+  margin: auto;
+}
+
+.share-url {
+  width: 120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.unlock {
+  width: 70px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lock {
+  width: 115px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.share-switch {
+  width: 105px;
+  margin-left: auto;
+  margin-right: auto;
 }

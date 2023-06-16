@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
@@ -62,21 +63,19 @@
         </div>
         </div>
 
-        <div class="mb-3">
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-2">
-                <div class="text-centor">
-                    <?php echo Html::anchor('note/home', '戻る', array('class' => 'btn btn-primary')); ?>
-                </div>
+        <div class="container">
+        <div class="row align-items-center">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <span class="button-left">
+                    <?php echo Html::anchor('note/home', '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
+                </span>
+                <span class="button-right">
+                    <?php echo Form::button('submit', '変更する', array('class' => 'btn btn-primary btn-lg')); ?>
+                </span>
             </div>
-            <div class="col-1"></div>
-            <div class="col-2">
-            <div class="text-centor">
-            <?php echo Form::submit('submit', '変更する', array('class' => 'btn btn-primary')); ?>
+            <div class="col-3"></div>
             </div>
-            </div>
-            <div class="col-2"></div>
         </div>
         </div>
     </div>
