@@ -5,7 +5,7 @@ function CopyViewModel() {
     self.copyText = function() {
         navigator.clipboard.writeText(self.textToCopy())
             .then(function() {
-                notie.alert({ type: 1, text: 'URLをコピーしました'});
+                notie.alert({ type: 1, text: '共有URLをコピーしました'});
                 console.log('Text copied to clipboard');
             })
             .catch(function(error) {
