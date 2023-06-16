@@ -37,10 +37,13 @@
                 <div>
                 <!-- タグ表示 -->
                 <?php if ($result[0]['tag_name'] !== null) : ?>
+                    <i class="bi bi-tags-fill"></i>
                     <?php $tag_name = explode(',', $result[0]['tag_name']); ?>
                         <?php foreach ($tag_name as $name) : ?>
-                            <?php echo '#' .$name; ?>
+                            <?php echo '<span class="badge rounded-pill bg-secondary">' .$name;?>
                             &nbsp;
+                            <?php echo Html::anchor(Uri::create('note/delete_tag', array(), array('tagname' => $name, 'noteid' => $current_note)), '<i class="bi bi-x-circle"></i>'); ?>
+                            </span>
                         <?php endforeach; ?>
                 <?php endif; ?>
                 </div>
@@ -86,21 +89,22 @@
             <div class="col-2"></div>               
             <div class="col-8"></div>
             <div class="col-2">
-                <p class="form-check">
-                <?php echo Form::label('共有する', 'share', array('class' => "form-check-label", 'for' => "share")); ?>
-                <?php echo Form::input('share', 1, array('class' => "form-check-input", 'type' => "radio", 'id' => "flexRadioDefault1", ($result[0]['share_flag'] ? 'checked' : ''), 'disabled')); ?>
-                </p>
-                <p class="form-check">
-                <?php echo Form::label('共有しない', 'share', array('class' => "form-check-label", 'for' => "share")); ?>
-                <?php echo Form::input('share', 0, array('class' => "form-check-input", 'type' => "radio", 'id' => "flexRadioDefault1", ($result[0]['share_flag'] ? '' : 'checked'), 'disabled')); ?>
-                </p>
+                <?php if ($result[0]['share_flag'] === 0) : ?>
+                    <div class="lock">
+                    <i class="bi bi-lock"></i><span class="share-text">プライベート</span>
+                    </div>
+                <?php elseif ($result[0]['share_flag'] === 1) : ?>
+                    <div class="unlock">
+                    <i class="bi bi-unlock"></i><span class="share-text">共有中</span>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
             
     <div class="m-4">
         <label for="exampleFormControlTextarea1" class="form-label"></label>
-        <?php echo Form::textarea('content', $result[0]['content'], array('class' => 'form-control', 'id' => 'exampleFormControlTextarea1', 'rows' => 50, 'disabled')); ?>
+        <?php echo Form::textarea('content', $result[0]['content'], array('class' => 'form-control', 'id' => 'exampleFormControlTextarea1', 'rows' => 35, 'disabled')); ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
