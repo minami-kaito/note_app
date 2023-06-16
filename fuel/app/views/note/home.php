@@ -85,55 +85,11 @@
         </div>
     </div>
 
-    <!-- ノート一覧 -->
-    <div class="container">
-    <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col" class="note-center">ノートタイトル</th>
-          <th scope="col" class="note-center">閲覧のみ</th>
-          <th scope="col" class="note-center">更新日時</th>
-          <th scope="col" class="note-center">削除する</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if (isset($result)): ?>
-            <?php foreach ($result as $note_list): ?>
-        <tr>
-          <td>
-            <div class="note-title">
-            <?php echo Html::anchor(Uri::create('note/page', array(), array('noteid' => $note_list['note_id'])), $note_list['title']); ?>
-            <div class="tag-list">
-                <!-- タグ表示 -->
-                <?php if ($note_list['tag_name'] !== null): ?>
-                    <?php $tag_name = explode(',', $note_list['tag_name']);?>
-                    <?php foreach ($tag_name as $name): ?>
-                        <?php echo '<span>#' . $name . '</span>'; ?>
-                    <?php endforeach;?>
-                <?php endif;?>
-            </div>
-            </div>
-          </td>
-          <td class="note-center"><?php echo Html::anchor(Uri::create('note/browse', array(), array('noteid' => $note_list['note_id'])), '閲覧モード', array('class' => 'btn btn-outline-info')); ?></td>
-          <td class="note-center"><?php echo $note_list['updated_at']; ?></td>
-          <td class="note-center"><?php echo Html::anchor(Uri::create('note/delete', array(), array('noteid' => $note_list['note_id'])), '<i class="bi bi-trash"></i>'); ?></td>
-        </tr>
-            <?php endforeach;?>
-        <?php endif;?>
-      </tbody>
-    </table>
-    </div>
-    </div>
-
     <br>
-    <?php echo Form::close(); ?>
-
     <div id="container"></div>
+
+    <?php echo Form::close(); ?>
     
-    <script>
-        const js_array = JSON.parse('<?php echo json_encode($result); ?>');
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Load React. -->
@@ -143,6 +99,7 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <!-- Load our React component. -->
+    <script>const js_array = JSON.parse('<?php echo json_encode($result); ?>');</script>
     <?php echo Asset::js('home.js', array('type' => 'module')); ?>
 </body>
 </html>
