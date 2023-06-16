@@ -86,6 +86,14 @@ class Controller_Note extends Controller
 
 		$note_id = Input::post('note_id');
 
+		// ノートの作成者かチェック
+		$result_userid = Note::check_note($note_id);
+		if ($result_userid[0]['user_id'] != Auth::get('user_id'))
+		{
+			$data['result'] = Note::note_list(Auth::get('user_id'));
+			return Response::forge(View::forge('note/home', $data));
+		}
+
 		$tags = Input::post('tag', '');
 		// タグが入力されているならチェック
 		if ($tags !== '') 
@@ -222,6 +230,12 @@ class Controller_Note extends Controller
 		$data['current_note'] = Input::get('noteid');
 		$data['result'] = Note::edit_page($data['current_note']);
 
+		if ($data['result'][0]['user_id'] != Auth::get('user_id'))
+		{
+			$data['result'] = Note::note_list(Auth::get('user_id'));
+			return Response::forge(View::forge('note/home', $data));
+		}
+
 		return Response::forge(View::forge('note/page', $data));
 	}
 
@@ -234,6 +248,15 @@ class Controller_Note extends Controller
 	public function action_delete()
 	{
 		$note_id = Input::get('noteid');
+
+		// ノートの作成者かチェック
+		$result_userid = Note::check_note($note_id);
+		if ($result_userid[0]['user_id'] != Auth::get('user_id'))
+		{
+			$data['result'] = Note::note_list(Auth::get('user_id'));
+			return Response::forge(View::forge('note/home', $data));
+		}
+
 		Note::delete_note($note_id);
 		$data['delete_result'] = 'ノートを削除しました';
 		$data['result'] = Note::note_list(Auth::get('user_id'));
@@ -303,6 +326,15 @@ class Controller_Note extends Controller
 	{
 		$tag_name = Input::get('tagname');
 		$note_id = Input::get('noteid');
+
+		// ノートの作成者かチェック
+		$result_userid = Note::check_note($note_id);
+		if ($result_userid[0]['user_id'] != Auth::get('user_id'))
+		{
+			$data['result'] = Note::note_list(Auth::get('user_id'));
+			return Response::forge(View::forge('note/home', $data));
+		}
+
 		Note::delete_note_tag($tag_name, $note_id);
 		$data['current_note'] = $note_id;
 		$data['result'] = Note::edit_page($data['current_note']);
@@ -377,13 +409,13 @@ class Controller_Note extends Controller
 		// タイトルの検索
 		if (isset($title))
 		{
-			$result_title = Note::search_result_title($title);
+			$result_title = Note::search_result_title($title, Auth::get('user_id'));
 		}	
 
 		// タグの検索
 		if (isset($tag))
 		{
-			$result_tag = Note::search_result_tag($tag);
+			$result_tag = Note::search_result_tag($tag, Auth::get('user_id'));
 		}
 
 		// 結果：タイトル検索かつタグ検索
@@ -439,7 +471,7 @@ class Controller_Note extends Controller
 		}
 
 		$data['search_empty'] = '検索に一致するものがありませんでした。';
-
+		$data['result'] = Note::note_list(Auth::get('user_id'));
 		return Response::forge(View::forge('note/home', $data));
 	}
 
