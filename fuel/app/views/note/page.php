@@ -101,7 +101,7 @@
     <div class="container">
     <div class="row">
         <div class="col-2">
-            <button type="button" class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#note-menu" aria-expanded="false" aria-controls="note-menu">
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#note-menu" aria-expanded="false" aria-controls="note-menu">
                 <i class="bi bi-list"></i>
                 <div class="small">メニュー</div>
             </button>
@@ -115,7 +115,7 @@
         </div>               
         <div class="col-8">
             文字設定メニュー
-            <?php echo Form::button('submit', '<i class="bi bi-pencil-square"></i><div class="small">&nbsp;保存&nbsp;</div>', array('class' => "btn btn-success")); ?>
+            <?php echo Form::button('submit', '<i class="bi bi-pencil-square"></i><div class="small">&ensp;保存&ensp;</div>', array('class' => "btn btn-success")); ?>
         </div>
         <div class="col-2">
             <?php if ($result[0]['share_flag'] === 0) : ?>
@@ -152,7 +152,7 @@
         <?php echo (isset($result_save)) ? $result_save : ''; ?>
     </div>
 
-    <div class="mx-4">
+    <div class="m-3">
         <label for="exampleFormControlTextarea1" class="form-label"></label>
         <?php echo Form::textarea('content', $result[0]['content'], array('class' => 'form-control', 'id' => 'exampleFormControlTextarea1', 'rows' => 35)); ?>
         <?php echo Form::hidden('note_id', $result[0]['note_id']); ?>
