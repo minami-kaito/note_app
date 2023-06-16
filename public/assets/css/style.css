@@ -38,7 +38,7 @@ h1 {
 }
 
 .bi-pencil-square {
-  font-size: 20px;
+  font-size: 15px;
 }
 
 .bi-box-arrow-in-right {
@@ -47,6 +47,21 @@ h1 {
 
 .bi-x-circle {
   color: antiquewhite;
+}
+
+.bi-lock {
+  font-size: 25px;
+  color: rgb(51, 144, 202);
+}
+
+.bi-unlock {
+  font-size: 25px;
+  color: rgb(51, 144, 202);
+}
+
+.share-text {
+  font-size: 15px;
+  color: #7b7f84;
 }
 
 .note-center {
@@ -127,14 +142,14 @@ th {
 .page-item {
   vertical-align: middle;
   text-align: center;
-  font-size: 25px;
+  font-size: 15px;
   color: blue;
 }
 
 .page-link {
   vertical-align: middle;
   text-align: center;
-  font-size: 25px;
+  font-size: 15px;
   color: blue;
 }
 
@@ -143,4 +158,28 @@ th {
   text-align: center;
   width: 200px;
   margin: auto;
+}
+
+.share-url {
+  width: 120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.unlock {
+  width: 70px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lock {
+  width: 115px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.share-switch {
+  width: 105px;
+  margin-left: auto;
+  margin-right: auto;
 }
