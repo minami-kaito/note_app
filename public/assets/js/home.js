@@ -52,7 +52,7 @@ function Items(_ref) {
           currentItems && currentItems.map(function (item) {
             return React.createElement(
               "tr",
-              null,
+              { key: item.note_id },
               React.createElement(
                 "td",
                 null,
@@ -64,7 +64,28 @@ function Items(_ref) {
                     { href: "http://localhost/public/note/page?noteid=" + item.note_id },
                     item.title
                   )
-                )
+                ),
+                React.createElement(
+                  "i",
+                  { "class": "bi bi-tags-fill" },
+                  "\u2009"
+                ),
+                item.tag_name && item.tag_name.split(',').map(function (tag) {
+                  return React.createElement(
+                    React.Fragment,
+                    null,
+                    React.createElement(
+                      "span",
+                      { "class": "badge rounded-pill bg-secondary", key: "" + item.note_id + tag },
+                      tag
+                    ),
+                    React.createElement(
+                      "span",
+                      null,
+                      "\xA0"
+                    )
+                  );
+                })
               ),
               React.createElement(
                 "td",
@@ -137,7 +158,6 @@ function PaginatedItems(_ref2) {
   return React.createElement(
     React.Fragment,
     null,
-    React.createElement(Items, { currentItems: currentItems }),
     React.createElement(ReactPaginate, {
       nextLabel: ">",
       onPageChange: handlePageClick,
@@ -157,7 +177,8 @@ function PaginatedItems(_ref2) {
       containerClassName: "pagination",
       activeClassName: "active",
       renderOnZeroPageCount: null
-    })
+    }),
+    React.createElement(Items, { currentItems: currentItems })
   );
 }
 
