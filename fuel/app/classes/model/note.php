@@ -196,6 +196,27 @@ class Note extends \Model
     }
 
     /**
+     * ノートのuser_idを取得する
+     *
+     * @access  public
+     */
+    public static function check_note($note_id)
+    {
+        try
+        {
+            $result = \DB::select('user_id')
+                ->from('notes')
+                ->where('note_id', '=', $note_id)
+                ->execute()
+                ->as_array();
+
+            return $result;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * 名前が一致するタグのIDを取得
      *
      * @access  public
@@ -449,12 +470,16 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function search_result_title(array $title)
+    public static function search_result_title(array $title, $user_id)
     {
         try
         {
             $query = \DB::select('note_id')
                 ->from('notes')
+                ->where_open()
+                ->where('user_id', '=', $user_id)
+                ->where_close()
+                ->and_where_open()
                 ->where('note_id', '=', '0');
 
             foreach ($title[0] as $ti) 
@@ -463,7 +488,7 @@ class Note extends \Model
                 $ti = preg_replace("/\s|　+/", "", $ti);
                 $query->or_where('title', 'like', '%' . $ti . '%');
             }
-
+            $query->and_where_close();
             $result = $query->execute()->as_array();
 
             // ノートidを返す
@@ -479,7 +504,7 @@ class Note extends \Model
      *
      * @access  public
      */
-    public static function search_result_tag(array $tag)
+    public static function search_result_tag(array $tag, $user_id)
     {
         try
         {
@@ -487,13 +512,21 @@ class Note extends \Model
                 ->from('note_tags')
                 ->join('tags', 'INNER')
                 ->on('tags.tag_id', '=', 'note_tags.tag_id')
+                ->join('notes', 'INNER')
+                ->on('note_tags.note_id', '=', 'notes.note_id')
+                ->where_open()
+                ->where('notes.user_id', '=', $user_id)
+                ->where_close()
+                ->and_where_open()
                 ->where('tags.tag_id', '=', '0');
+
             foreach ($tag[0] as $ta) 
             {
                 // 先頭の#とスペースがあれば削除
                 $ta = preg_replace("/(\s|　+#)|(#)/", "", $ta);
                 $query->or_where('tags.tag_name', '=', $ta);
             }
+            $query->and_where_close();
             $result = $query->execute()->as_array();
 
             // ノートidを返す
