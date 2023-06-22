@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/../../../../public/assets/readonly/main.386a3fd1.css">
     <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
@@ -38,9 +39,8 @@
                 <div class="col-3"></div>
                 <div class="col-6">
                     <p>復元する内容 : </p>
-                    <div class="text-centor">
-                        <p class="fs-4"><?php echo $result[0]['version_content']; ?></p>
-                    </div>
+                    <div id="root"></div>
+                    <div id="portal"></div>
                 </div>
                 <div class="col-3"></div>
             </div>
@@ -51,6 +51,7 @@
         <div class="row align-items-center">
             <div class="col-3"></div>
             <div class="col-6">
+                <div class="mx-3">
                 <span class="button-left">
                     <?php echo Html::anchor(Input::referrer(), '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
                 </span>
@@ -60,6 +61,7 @@
                     <?php echo Form::hidden('version_id', $result[0]['version_id']); ?>
                     <?php echo Form::button('submit', '復元する', array('class' => 'btn btn-primary btn-lg')); ?>
                 </span>
+                </div>
             </div>
             <div class="col-3"></div>
         </div>
@@ -67,5 +69,13 @@
     
     <?php echo Form::close(); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+    <script> 
+    let jsoneditor = '<?php print($result[0]['version_content']); ?>'.replaceAll('&quot;', '"'); 
+    if (jsoneditor === '') {
+        // 初期状態
+        jsoneditor = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
+    }
+    </script>
+    <script type="module" crossorigin src="./../../../../public/assets/readonly/main.177de870.js"></script>
 </body>
 </html>
