@@ -70,7 +70,7 @@
             <div class="col-3"></div>
             <div class="col-6">
                 <span class="button-left">
-                    <?php echo Html::anchor(Input::referrer(), '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
+                    <?php echo Html::anchor('note/home', '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
                 </span>
                 <span class="button-right">
                     <?php echo Form::button('submit', '削除する', array('class' => 'btn btn-primary btn-lg')); ?>
