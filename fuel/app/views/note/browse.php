@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/../../../../public/assets/readonly/main.386a3fd1.css">
+    <link rel="stylesheet" href="/../../../../public/assets/readonly/main.3a306bc4.css">
     <?php echo Asset::css('style.css'); ?>
     <title>ノートアプリ</title>
 </head>
@@ -102,15 +102,9 @@
 
     <div id="root"></div>
     <div id="portal"></div>
+    <?php echo Form::hidden('content', $result[0]['content'], array('id' => 'lexical_text')); ?>
             
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-    <script> 
-    let jsoneditor = '<?php print($result[0]['content']); ?>'.replaceAll('&quot;', '"'); 
-    if (jsoneditor === '') {
-        // 初期状態
-        jsoneditor = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
-    }
-    </script>
-    <script type="module" crossorigin src="./../../../../public/assets/readonly/main.177de870.js"></script>
+    <script type="module" crossorigin src="./../../../../public/assets/readonly/main.0c370d41.js"></script>
 </body>
 </html>
