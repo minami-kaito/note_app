@@ -22,6 +22,7 @@ webpack.config.js
 /public/docs/
 /public/lexical-playground
 /src/
+/src2/
 /dist/
 
 

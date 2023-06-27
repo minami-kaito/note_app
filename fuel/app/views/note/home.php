@@ -100,6 +100,7 @@
 
     <!-- Load our React component. -->
     <script>const js_array = JSON.parse('<?php echo json_encode($result); ?>');</script>
+    <script>console.log(js_array);</script>
     <?php echo Asset::js('home.js', array('type' => 'module')); ?>
 </body>
 </html>

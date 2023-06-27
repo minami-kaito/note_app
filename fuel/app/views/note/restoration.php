@@ -90,7 +90,7 @@
     </div>
     </div>
     <div class="m-5">
-        <?php echo Html::anchor(Uri::create(Input::referrer(), array()), '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
+        <?php echo Html::anchor(Uri::create('note/page', array(), array('noteid' => $ver['note_id'])), '<i class="bi bi-arrow-return-left"></i>&emsp;戻る', array('type' => 'button', 'class' => 'btn btn-secondary')); ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
