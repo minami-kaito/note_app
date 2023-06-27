@@ -59,9 +59,9 @@
                     <i class="bi bi-tags-fill"></i>
                     <?php $tag_name = explode(',', $result[0]['tag_name']); ?>
                         <?php foreach ($tag_name as $name) : ?>
-                            <?php echo '<span class="badge rounded-pill bg-secondary">' .$name;?>
+                            <?php echo '<span id="BTN_'.$name.'" class="badge rounded-pill bg-secondary">' .$name;?>
                             &nbsp;
-                            <?php echo '<i class="bi bi-x-circle" type="button" onclick="delete_tag(&#39;'.$name.'&#39;)"></i>'; ?>
+                            <?php echo '<i class="bi bi-x-circle" type="button" onclick="delete_tag(&apos;'.$name.'&apos;)"></i>'; ?>
                         </span>
                         <?php endforeach; ?>
                 <?php endif; ?>
@@ -167,6 +167,7 @@
         const query_params = new URLSearchParams(params); 
         fetch('http://localhost/public/api/delete_tag.json?' + query_params)
         .then(async (response)=>{
+            document.getElementById(`BTN_${value}`).remove();
             console.log('response : ',await response.json());
         }).catch((error)=>{
             console.log('error : ', error);

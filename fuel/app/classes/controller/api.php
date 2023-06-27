@@ -30,7 +30,8 @@ class Controller_Api extends Controller_Rest
 		$data['result'] = Note::edit_page($data['current_note']);
 
 		return $this->response(array(
-			'success' => true
+			'success' => true,
+			'tag' => $tag_name,
 		));
 	}
 }
